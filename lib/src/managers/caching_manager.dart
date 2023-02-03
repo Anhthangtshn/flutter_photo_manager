@@ -21,7 +21,7 @@ class PhotoCachingManager {
 
   /// Request caching for assets.
   Future<void> requestCacheAssets({
-    required List<AssetEntity> assets,
+    List<AssetEntity> assets,
     ThumbnailOption option = _defaultOption,
   }) {
     assert(assets.isNotEmpty);
@@ -33,7 +33,7 @@ class PhotoCachingManager {
 
   /// Request caching for assets' ID.
   Future<void> requestCacheAssetsWithIds({
-    required List<String> assetIds,
+    List<String> assetIds,
     ThumbnailOption option = _defaultOption,
   }) {
     assert(assetIds.isNotEmpty);

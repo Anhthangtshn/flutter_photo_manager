@@ -17,7 +17,7 @@ import 'notify_manager.dart';
 /// Use various methods in this class to access & manage assets.
 class PhotoManager {
   @visibleForTesting
-  PhotoManager.withPlugin([base.PhotoManagerPlugin? photoManagerPlugin]) {
+  PhotoManager.withPlugin([base.PhotoManagerPlugin photoManagerPlugin]) {
     if (photoManagerPlugin != null && photoManagerPlugin != base.plugin) {
       base.plugin = photoManagerPlugin;
     }
@@ -81,7 +81,7 @@ class PhotoManager {
     bool hasAll = true,
     bool onlyAll = false,
     RequestType type = RequestType.common,
-    FilterOptionGroup? filterOption,
+    FilterOptionGroup filterOption,
   }) async {
     return plugin.getAssetPathList(
       hasAll: hasAll,

@@ -38,7 +38,7 @@ class ThumbnailSize {
     if (other is! ThumbnailSize) {
       return false;
     }
-    return other.width == width && other.height == height;
+    return other is ThumbnailSize && other.width == width && other.height == height;
   }
 
   @override
@@ -52,7 +52,7 @@ class ThumbnailSize {
 @immutable
 class ThumbnailOption {
   const ThumbnailOption({
-    required this.size,
+    this.size,
     this.format = ThumbnailFormat.jpeg,
     this.quality = PMConstants.vDefaultThumbnailQuality,
     this.frame = 0,
@@ -60,7 +60,7 @@ class ThumbnailOption {
 
   /// Construct thumbnail options only for iOS/macOS.
   factory ThumbnailOption.ios({
-    required ThumbnailSize size,
+     ThumbnailSize size,
     ThumbnailFormat format = ThumbnailFormat.jpeg,
     int quality = PMConstants.vDefaultThumbnailQuality,
     DeliveryMode deliveryMode = DeliveryMode.opportunistic,
@@ -124,7 +124,7 @@ class ThumbnailOption {
     if (other is! ThumbnailOption) {
       return false;
     }
-    return size == other.size &&
+    return other is ThumbnailOption && size == other.size &&
         format == other.format &&
         quality == other.quality &&
         frame == other.frame;
@@ -134,12 +134,12 @@ class ThumbnailOption {
 @immutable
 class _IOSThumbnailOption extends ThumbnailOption {
   const _IOSThumbnailOption({
-    required ThumbnailSize size,
+    ThumbnailSize size,
     ThumbnailFormat format = ThumbnailFormat.jpeg,
     int quality = PMConstants.vDefaultThumbnailQuality,
-    required this.deliveryMode,
-    required this.resizeMode,
-    required this.resizeContentMode,
+     this.deliveryMode,
+     this.resizeMode,
+     this.resizeContentMode,
   }) : super(size: size, format: format, quality: quality);
 
   final DeliveryMode deliveryMode;
@@ -168,7 +168,7 @@ class _IOSThumbnailOption extends ThumbnailOption {
     if (other is! _IOSThumbnailOption) {
       return false;
     }
-    return size == other.size &&
+    return other is _IOSThumbnailOption  && size == other.size &&
         format == other.format &&
         quality == other.quality &&
         frame == other.frame &&

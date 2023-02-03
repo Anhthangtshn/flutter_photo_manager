@@ -32,7 +32,7 @@ class PMProgressHandler {
   int get channelIndex => _channelIndex;
   final int _channelIndex;
 
-  late final OptionalMethodChannel _channel;
+  OptionalMethodChannel _channel;
 
   final StreamController<PMProgressState> _controller =
       StreamController<PMProgressState>.broadcast();
@@ -42,11 +42,11 @@ class PMProgressHandler {
   Stream<PMProgressState> get stream => _controller.stream;
 
   Future<dynamic> _onProgress(MethodCall call) async {
-    final Map<dynamic, dynamic>? arguments =
-        call.arguments as Map<dynamic, dynamic>?;
+    final Map<dynamic, dynamic> arguments =
+        call.arguments as Map<dynamic, dynamic>;
     switch (call.method) {
       case 'notifyProgress':
-        final double progress = arguments!['progress'] as double;
+        final double progress = arguments['progress'] as double;
         final int stateIndex = arguments['state'] as int;
         final PMRequestState state = PMRequestState.values[stateIndex];
         _controller.add(PMProgressState(progress, state));

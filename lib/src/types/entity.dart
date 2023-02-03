@@ -24,15 +24,15 @@ import 'types.dart';
 @immutable
 class AssetPathEntity {
   AssetPathEntity({
-    required this.id,
-    required this.name,
+     this.id,
+     this.name,
     @Deprecated('Use assetCountAsync instead. This will be removed in 3.0.0')
         this.assetCount = 0,
     this.albumType = 1,
     this.lastModified,
     this.type = RequestType.common,
     this.isAll = false,
-    FilterOptionGroup? filterOption,
+    FilterOptionGroup filterOption,
   }) : filterOption = filterOption ??= FilterOptionGroup();
 
   /// Obtain an entity from ID.
@@ -41,7 +41,7 @@ class AssetPathEntity {
   /// could be deleted in anytime, which will cause properties invalid.
   static Future<AssetPathEntity> fromId(
     String id, {
-    FilterOptionGroup? filterOption,
+    FilterOptionGroup filterOption,
     RequestType type = RequestType.common,
     int albumType = 1,
   }) async {
@@ -84,7 +84,7 @@ class AssetPathEntity {
   ///
   /// This field will only be included when
   /// [FilterOptionGroup.containsPathModified] is true.
-  final DateTime? lastModified;
+  final DateTime lastModified;
 
   /// The value used internally by the user.
   /// Used to indicate the value that should be available inside the path.
@@ -103,10 +103,10 @@ class AssetPathEntity {
 
   /// Call this method to obtain new path entity.
   static Future<AssetPathEntity> obtainPathFromProperties({
-    required String id,
+    String id,
     int albumType = 1,
     RequestType type = RequestType.common,
-    FilterOptionGroup? optionGroup,
+    FilterOptionGroup optionGroup,
     bool maxDateTimeToNow = true,
   }) async {
     optionGroup ??= FilterOptionGroup();
@@ -126,7 +126,7 @@ class AssetPathEntity {
       optionGroup = optionGroup;
     }
 
-    final Map<dynamic, dynamic>? result = await plugin.fetchPathProperties(
+    final Map<dynamic, dynamic> result = await plugin.fetchPathProperties(
       id,
       type,
       optionGroup,
@@ -134,7 +134,7 @@ class AssetPathEntity {
     if (result == null) {
       throw error;
     }
-    final Object? list = result['data'];
+    final Object list = result['data'];
     if (list is List && list.isNotEmpty) {
       return ConvertUtils.convertToPathList(
         result.cast<String, dynamic>(),
@@ -162,8 +162,8 @@ class AssetPathEntity {
   /// [page] should starts with and greater than 0.
   /// [size] is item count of current [page].
   Future<List<AssetEntity>> getAssetListPaged({
-    required int page,
-    required int size,
+     int page,
+     int size,
   }) {
     assert(albumType == 1, 'Only album can request for assets.');
     assert(size > 0, 'Page size must be greater than 0.');
@@ -187,8 +187,8 @@ class AssetPathEntity {
   /// the maxmium assets if the total count of assets is fewer than the range,
   /// instead of throwing a [RangeError] like [String.substring].
   Future<List<AssetEntity>> getAssetListRange({
-    required int start,
-    required int end,
+     int start,
+     int end,
   }) async {
     assert(albumType == 1, 'Only album can request for assets.');
     assert(start >= 0, 'The start must be greater than 0.');
@@ -223,10 +223,10 @@ class AssetPathEntity {
 
   /// Obtain a new [AssetPathEntity] from the current one
   /// with refreshed properties.
-  Future<AssetPathEntity?> fetchPathProperties({
-    FilterOptionGroup? filterOptionGroup,
+  Future<AssetPathEntity> fetchPathProperties({
+    FilterOptionGroup filterOptionGroup,
   }) async {
-    final Map<dynamic, dynamic>? result = await plugin.fetchPathProperties(
+    final Map<dynamic, dynamic> result = await plugin.fetchPathProperties(
       id,
       type,
       filterOptionGroup ?? filterOption,
@@ -234,7 +234,7 @@ class AssetPathEntity {
     if (result == null) {
       return null;
     }
-    final Object? list = result['data'];
+    final Object list = result['data'];
     if (list is List && list.isNotEmpty) {
       return ConvertUtils.convertToPathList(
         result.cast<String, dynamic>(),
@@ -246,13 +246,13 @@ class AssetPathEntity {
   }
 
   AssetPathEntity copyWith({
-    String? id,
-    String? name,
-    int? albumType = 1,
-    DateTime? lastModified,
-    RequestType? type,
-    bool? isAll,
-    FilterOptionGroup? filterOption,
+    String id,
+    String name,
+    int albumType = 1,
+    DateTime lastModified,
+    RequestType type,
+    bool isAll,
+    FilterOptionGroup filterOption,
   }) {
     return AssetPathEntity(
       id: id ?? this.id,
@@ -270,7 +270,7 @@ class AssetPathEntity {
     if (other is! AssetPathEntity) {
       return false;
     }
-    return id == other.id &&
+    return other is AssetPathEntity  && id == other.id &&
         name == other.name &&
         albumType == other.albumType &&
         type == other.type &&
@@ -301,10 +301,10 @@ class AssetPathEntity {
 @immutable
 class AssetEntity {
   const AssetEntity({
-    required this.id,
-    required this.typeInt,
-    required this.width,
-    required this.height,
+     this.id,
+     this.typeInt,
+     this.width,
+     this.height,
     this.duration = 0,
     this.orientation = 0,
     this.isFavorite = false,
@@ -312,8 +312,8 @@ class AssetEntity {
     this.createDateSecond,
     this.modifiedDateSecond,
     this.relativePath,
-    double? latitude,
-    double? longitude,
+    double latitude,
+    double longitude,
     this.mimeType,
     this.subtype = 0,
   })  : _latitude = latitude,
@@ -323,7 +323,7 @@ class AssetEntity {
   ///
   /// This method is not recommend in general, since the corresponding asset
   /// could be deleted in anytime, which will cause properties invalid.
-  static Future<AssetEntity?> fromId(String id) async {
+  static Future<AssetEntity> fromId(String id) async {
     try {
       return await _obtainAssetFromId(id);
     } catch (e) {
@@ -332,8 +332,8 @@ class AssetEntity {
   }
 
   /// Refresh the property of [AssetPathEntity] from the given ID.
-  static Future<AssetEntity?> _obtainAssetFromId(String id) async {
-    final Map<dynamic, dynamic>? result =
+  static Future<AssetEntity> _obtainAssetFromId(String id) async {
+    final Map<dynamic, dynamic> result =
         await plugin.fetchEntityProperties(id);
     if (result == null) {
       return null;
@@ -342,7 +342,7 @@ class AssetEntity {
   }
 
   /// Refresh properties for the current asset and return a new object.
-  Future<AssetEntity?> obtainForNewProperties() => _obtainAssetFromId(id);
+  Future<AssetEntity> obtainForNewProperties() => _obtainAssetFromId(id);
 
   /// The ID of the asset.
   ///  * Android: `_id` column in `MediaStore` database.
@@ -356,7 +356,7 @@ class AssetEntity {
   /// This field is nullable on iOS.
   /// If you need to obtain it, set [FilterOption.needTitle] to `true`
   /// or use the async getter [titleAsync].
-  final String? title;
+  final String title;
 
   ///  {@template photo_manager.AssetEntity.titleAsync}
   ///  * Android: `MediaStore.MediaColumns.DISPLAY_NAME`.
@@ -419,8 +419,8 @@ class AssetEntity {
   /// See also:
   ///  * https://developer.android.com/reference/android/provider/MediaStore.Images.ImageColumns#LATITUDE
   ///  * https://developer.apple.com/documentation/corelocation/cllocation?language=objc#declaration
-  double? get latitude => _latitude;
-  final double? _latitude;
+  double get latitude => _latitude;
+  final double _latitude;
 
   /// Latitude value of the location when shooting.
   ///  * Android: `MediaStore.Images.ImageColumns.LONGITUDE`.
@@ -431,8 +431,8 @@ class AssetEntity {
   /// See also:
   ///  * https://developer.android.com/reference/android/provider/MediaStore.Images.ImageColumns#LATITUDE
   ///  * https://developer.apple.com/documentation/corelocation/cllocation?language=objc#declaration
-  double? get longitude => _longitude;
-  final double? _longitude;
+  double get longitude => _longitude;
+  final double _longitude;
 
   /// Whether this asset is locally available.
   ///  * Android: Always true.
@@ -456,7 +456,7 @@ class AssetEntity {
   ///  * [originFile] which can obtain the origin file.
   ///  * [originFileWithSubtype] which can obtain the origin file with subtype.
   ///  * [loadFile] which can obtain file with [PMProgressHandler].
-  Future<File?> get file => _getFile();
+  Future<File> get file => _getFile();
 
   /// Obtain the compressed file of the asset with subtype.
   ///
@@ -467,7 +467,7 @@ class AssetEntity {
   ///  * [originFile] which can obtain the origin file.
   ///  * [originFileWithSubtype] which can obtain the origin file with subtype.
   ///  * [loadFile] which can obtain file with [PMProgressHandler].
-  Future<File?> get fileWithSubtype => _getFile(subtype: subtype);
+  Future<File> get fileWithSubtype => _getFile(subtype: subtype);
 
   /// Obtain the original file that contain all EXIF information.
   ///
@@ -480,7 +480,7 @@ class AssetEntity {
   ///  * [fileWithSubtype] which can obtain the compressed file with subtype.
   ///  * [originFileWithSubtype] which can obtain the origin file with subtype.
   ///  * [loadFile] which can obtain file with [PMProgressHandler].
-  Future<File?> get originFile => _getFile(isOrigin: true);
+  Future<File> get originFile => _getFile(isOrigin: true);
 
   /// Obtain the origin file with subtype.
   ///
@@ -491,7 +491,7 @@ class AssetEntity {
   ///  * [fileWithSubtype] which can obtain the compressed file with subtype.
   ///  * [originFile] which can obtain the origin file.
   ///  * [loadFile] which can obtain file with [PMProgressHandler].
-  Future<File?> get originFileWithSubtype {
+  Future<File> get originFileWithSubtype {
     return _getFile(isOrigin: true, subtype: subtype);
   }
 
@@ -504,10 +504,10 @@ class AssetEntity {
   ///  * [fileWithSubtype] which can obtain the compressed file with subtype.
   ///  * [originFile] which can obtain the original file.
   ///  * [originFileWithSubtype] which can obtain the origin file with subtype.
-  Future<File?> loadFile({
+  Future<File> loadFile({
     bool isOrigin = true,
     bool withSubtype = false,
-    PMProgressHandler? progressHandler,
+    PMProgressHandler progressHandler,
   }) {
     return _getFile(
       isOrigin: isOrigin,
@@ -520,7 +520,7 @@ class AssetEntity {
   ///
   /// **Use it with cautious** since the original data might be epic large.
   /// Generally use this method only for images.
-  Future<typed_data.Uint8List?> get originBytes => _getOriginBytes();
+  Future<typed_data.Uint8List> get originBytes => _getOriginBytes();
 
   /// Obtain the thumbnail data with [PMConstants.vDefaultThumbnailSize]
   /// size of the asset, typically use it for preview displays.
@@ -532,7 +532,7 @@ class AssetEntity {
   /// See also:
   ///  * [thumbnailDataWithSize] which is a common method to obtain thumbnails.
   ///  * [thumbnailDataWithOption] which accepts customized [ThumbnailOption].
-  Future<typed_data.Uint8List?> get thumbnailData => thumbnailDataWithSize(
+  Future<typed_data.Uint8List> get thumbnailData => thumbnailDataWithSize(
         const ThumbnailSize.square(PMConstants.vDefaultThumbnailSize),
       );
 
@@ -543,11 +543,11 @@ class AssetEntity {
   /// See also:
   ///  * [thumbnailData] which obtain the thumbnail data with fixed size.
   ///  * [thumbnailDataWithOption] which accepts customized [ThumbnailOption].
-  Future<typed_data.Uint8List?> thumbnailDataWithSize(
+  Future<typed_data.Uint8List> thumbnailDataWithSize(
     ThumbnailSize size, {
     ThumbnailFormat format = ThumbnailFormat.jpeg,
     int quality = 100,
-    PMProgressHandler? progressHandler,
+    PMProgressHandler progressHandler,
     int frame = 0,
   }) {
     assert(() {
@@ -556,9 +556,9 @@ class AssetEntity {
     }());
     // Return null if the asset is audio or others.
     if (type == AssetType.audio || type == AssetType.other) {
-      return Future<typed_data.Uint8List?>.value();
+      return Future<typed_data.Uint8List>.value();
     }
-    final ThumbnailOption option;
+    ThumbnailOption option;
     if (Platform.isIOS || Platform.isMacOS) {
       option = ThumbnailOption.ios(
         size: size,
@@ -586,9 +586,9 @@ class AssetEntity {
   /// See also:
   ///  * [thumbnailData] which obtain the thumbnail data with fixed size.
   ///  * [thumbnailDataWithSize] which is a common method to obtain thumbnails.
-  Future<typed_data.Uint8List?> thumbnailDataWithOption(
+  Future<typed_data.Uint8List> thumbnailDataWithOption(
     ThumbnailOption option, {
-    PMProgressHandler? progressHandler,
+    PMProgressHandler progressHandler,
   }) {
     assert(() {
       _checkThumbnailAssertion();
@@ -596,7 +596,7 @@ class AssetEntity {
     }());
     // Return null if the asset is audio or others.
     if (type == AssetType.audio || type == AssetType.other) {
-      return Future<typed_data.Uint8List?>.value();
+      return Future<typed_data.Uint8List>.value();
     }
     assert(() {
       option.checkAssertions();
@@ -628,7 +628,7 @@ class AssetEntity {
   Size get size => Size(width.toDouble(), height.toDouble());
 
   /// The create time in unix timestamp of the asset.
-  final int? createDateSecond;
+  final int createDateSecond;
 
   /// The create time of the asset in [DateTime].
   DateTime get createDateTime {
@@ -637,7 +637,7 @@ class AssetEntity {
   }
 
   /// The modified time in unix timestamp of the asset.
-  final int? modifiedDateSecond;
+  final int modifiedDateSecond;
 
   /// The modified time of the asset in [DateTime].
   DateTime get modifiedDateTime {
@@ -657,7 +657,7 @@ class AssetEntity {
   /// See also:
   ///  * https://developer.android.com/reference/android/content/ContentUris
   ///  * https://developer.apple.com/documentation/avfoundation/avurlasset
-  Future<String?> getMediaUrl() async {
+  Future<String> getMediaUrl() async {
     if (type == AssetType.video || type == AssetType.audio || isLivePhoto) {
       return plugin.getMediaUrl(this);
     }
@@ -667,9 +667,9 @@ class AssetEntity {
   bool get _platformMatched =>
       Platform.isIOS || Platform.isMacOS || Platform.isAndroid;
 
-  Future<File?> _getFile({
+  Future<File> _getFile({
     bool isOrigin = false,
-    PMProgressHandler? progressHandler,
+    PMProgressHandler progressHandler,
     int subtype = 0,
   }) async {
     assert(
@@ -679,7 +679,7 @@ class AssetEntity {
     if (!_platformMatched) {
       return null;
     }
-    final String? path = await plugin.getFullFile(
+    final String path = await plugin.getFullFile(
       id,
       isOrigin: isOrigin,
       progressHandler: progressHandler,
@@ -691,8 +691,8 @@ class AssetEntity {
     return File(path);
   }
 
-  Future<typed_data.Uint8List?> _getOriginBytes({
-    PMProgressHandler? progressHandler,
+  Future<typed_data.Uint8List> _getOriginBytes({
+    PMProgressHandler progressHandler,
   }) async {
     assert(
       _platformMatched,
@@ -705,8 +705,8 @@ class AssetEntity {
         int.parse(await plugin.getSystemVersion()) >= 29) {
       return plugin.getOriginBytes(id, progressHandler: progressHandler);
     }
-    final File? file = await originFile;
-    return file?.readAsBytes();
+    final File file = await originFile;
+    return file.readAsBytes();
   }
 
   /// The orientation of the asset.
@@ -730,7 +730,7 @@ class AssetEntity {
   ///  * Android 10 and above: `MediaStore.MediaColumns.RELATIVE_PATH`.
   ///  * Android 9 and below: The parent path of `MediaStore.MediaColumns.DATA`.
   ///  * iOS/macOS: Always null.
-  final String? relativePath;
+  final String relativePath;
 
   /// The mime type of the asset.
   ///  * Android: `MediaStore.MediaColumns.MIME_TYPE`.
@@ -739,7 +739,7 @@ class AssetEntity {
   /// See also:
   ///  * [mimeTypeAsync] which is the asynchronized getter of the MIME type.
   ///  * https://developer.android.com/reference/android/provider/MediaStore.MediaColumns#MIME_TYPE
-  final String? mimeType;
+  final String mimeType;
 
   /// Get the mime type async.
   ///  * Android: `MediaStore.MediaColumns.MIME_TYPE`.
@@ -751,24 +751,24 @@ class AssetEntity {
   /// See also:
   ///  * [mimeType] which is the synchronized getter of the MIME type.
   ///  * https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_conc/understand_utis_conc.html#//apple_ref/doc/uid/TP40001319-CH202-SW1
-  Future<String?> get mimeTypeAsync => plugin.getMimeTypeAsync(this);
+  Future<String> get mimeTypeAsync => plugin.getMimeTypeAsync(this);
 
   AssetEntity copyWith({
-    String? id,
-    int? typeInt,
-    int? width,
-    int? height,
-    int? duration,
-    int? orientation,
-    bool? isFavorite,
-    String? title,
-    int? createDateSecond,
-    int? modifiedDateSecond,
-    String? relativePath,
-    double? latitude,
-    double? longitude,
-    String? mimeType,
-    int? subtype,
+    String id,
+    int typeInt,
+    int width,
+    int height,
+    int duration,
+    int orientation,
+    bool isFavorite,
+    String title,
+    int createDateSecond,
+    int modifiedDateSecond,
+    String relativePath,
+    double latitude,
+    double longitude,
+    String mimeType,
+    int subtype,
   }) {
     return AssetEntity(
       id: id ?? this.id,
@@ -797,7 +797,7 @@ class AssetEntity {
     if (other is! AssetEntity) {
       return false;
     }
-    return id == other.id && isFavorite == other.isFavorite;
+    return other is AssetEntity && id == other.id && isFavorite == other.isFavorite;
   }
 
   @override
@@ -809,19 +809,16 @@ class AssetEntity {
 class LatLng {
   const LatLng({this.latitude, this.longitude});
 
-  final double? latitude;
-  final double? longitude;
+  final double latitude;
+  final double longitude;
+
 
   @override
-  bool operator ==(Object other) {
-    if (other is! AssetEntity) {
-      return false;
-    }
-    return latitude == other.latitude && longitude == other.longitude;
-  }
+  bool operator ==(Object other) => identical(this, other) || other is LatLng && runtimeType == other.runtimeType && latitude == other.latitude && longitude == other.longitude;
 
   @override
   int get hashCode => latitude.hashCode ^ longitude.hashCode;
+
 }
 
 /// The subtype value for Live Photos.

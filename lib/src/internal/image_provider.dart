@@ -46,7 +46,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   /// Size for thumb data.
   /// 缩略图的大小。
-  final ThumbnailSize? thumbnailSize;
+  final ThumbnailSize thumbnailSize;
 
   /// {@macro photo_manager.ThumbnailFormat}
   final ThumbnailFormat thumbnailFormat;
@@ -95,7 +95,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       }
 
       // Define the image type.
-      final ImageFileType type;
+      ImageFileType type;
       if (key.imageFileType == ImageFileType.other) {
         // Assume the title is invalid here, try again with the async getter.
         type = _getType(await key.entity.titleAsync);
@@ -103,7 +103,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         type = key.imageFileType;
       }
 
-      typed_data.Uint8List? data;
+      typed_data.Uint8List data;
       if (isOriginal) {
         if (key.entity.type == AssetType.video) {
           data = await key.entity.thumbnailData;
@@ -114,7 +114,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         }
       } else {
         data = await key.entity.thumbnailDataWithOption(
-          _thumbOption(thumbnailSize!),
+          _thumbOption(thumbnailSize),
         );
       }
       if (data == null) {
@@ -152,9 +152,9 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// ⚠ Not all the system version support read file name from the entity,
   /// so this method might not work sometime.
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的类型。
-  ImageFileType _getType([String? filename]) {
-    ImageFileType? type;
-    final String? extension = filename?.split('.').last ??
+  ImageFileType _getType([String filename]) {
+    ImageFileType type;
+    final String extension = filename?.split('.').last ??
         entity.mimeType?.split('/').last ??
         entity.title?.split('.').last;
     if (extension != null) {
@@ -197,7 +197,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     if (identical(this, other)) {
       return true;
     }
-    return entity == other.entity &&
+    return other is AssetEntityImageProvider  && entity == other.entity &&
         thumbnailSize == other.thumbnailSize &&
         thumbnailFormat == other.thumbnailFormat &&
         isOriginal == other.isOriginal;
@@ -220,21 +220,21 @@ class AssetEntityImage extends Image {
     this.isOriginal = true,
     this.thumbnailSize = PMConstants.vDefaultGridThumbnailSize,
     this.thumbnailFormat = ThumbnailFormat.jpeg,
-    Key? key,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    String? semanticLabel,
+    Key key,
+    ImageFrameBuilder frameBuilder,
+    ImageLoadingBuilder loadingBuilder,
+    ImageErrorWidgetBuilder errorBuilder,
+    String semanticLabel,
     bool excludeFromSemantics = false,
-    double? width,
-    double? height,
-    Color? color,
-    Animation<double>? opacity,
-    BlendMode? colorBlendMode,
-    BoxFit? fit,
+    double width,
+    double height,
+    Color color,
+    Animation<double> opacity,
+    BlendMode colorBlendMode,
+    BoxFit fit,
     AlignmentGeometry alignment = Alignment.center,
     ImageRepeat repeat = ImageRepeat.noRepeat,
-    Rect? centerSlice,
+    Rect centerSlice,
     bool matchTextDirection = false,
     bool gaplessPlayback = false,
     bool isAntiAlias = false,
@@ -255,7 +255,6 @@ class AssetEntityImage extends Image {
           width: width,
           height: height,
           color: color,
-          opacity: opacity,
           colorBlendMode: colorBlendMode,
           fit: fit,
           alignment: alignment,
@@ -269,7 +268,7 @@ class AssetEntityImage extends Image {
 
   final AssetEntity entity;
   final bool isOriginal;
-  final ThumbnailSize? thumbnailSize;
+  final ThumbnailSize thumbnailSize;
   final ThumbnailFormat thumbnailFormat;
 
   @override

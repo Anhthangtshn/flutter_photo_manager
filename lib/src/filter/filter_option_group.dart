@@ -17,8 +17,8 @@ class FilterOptionGroup {
     this.containsPathModified = false,
     this.containsLivePhotos = true,
     this.onlyLivePhotos = false,
-    DateTimeCond? createTimeCond,
-    DateTimeCond? updateTimeCond,
+    DateTimeCond createTimeCond,
+    DateTimeCond updateTimeCond,
     List<OrderOption> orders = const <OrderOption>[],
   }) {
     _map[AssetType.image] = imageOption;
@@ -35,7 +35,7 @@ class FilterOptionGroup {
   final Map<AssetType, FilterOption> _map = <AssetType, FilterOption>{};
 
   /// Get the [FilterOption] according the specific [AssetType].
-  FilterOption getOption(AssetType type) => _map[type]!;
+  FilterOption getOption(AssetType type) => _map[type];
 
   /// Set the [FilterOption] according the specific [AssetType].
   void setOption(AssetType type, FilterOption option) {
@@ -71,7 +71,7 @@ class FilterOptionGroup {
 
   void merge(FilterOptionGroup other) {
     for (final AssetType type in _map.keys) {
-      _map[type] = _map[type]!.merge(other.getOption(type));
+      _map[type] = _map[type].merge(other.getOption(type));
     }
     containsPathModified = other.containsPathModified;
     containsLivePhotos = other.containsLivePhotos;
@@ -101,15 +101,15 @@ class FilterOptionGroup {
   }
 
   FilterOptionGroup copyWith({
-    FilterOption? imageOption,
-    FilterOption? videoOption,
-    FilterOption? audioOption,
-    bool? containsPathModified,
-    bool? containsLivePhotos,
-    bool? onlyLivePhotos,
-    DateTimeCond? createTimeCond,
-    DateTimeCond? updateTimeCond,
-    List<OrderOption>? orders,
+    FilterOption imageOption,
+    FilterOption videoOption,
+    FilterOption audioOption,
+    bool containsPathModified,
+    bool containsLivePhotos,
+    bool onlyLivePhotos,
+    DateTimeCond createTimeCond,
+    DateTimeCond updateTimeCond,
+    List<OrderOption> orders,
   }) {
     imageOption ??= _map[AssetType.image];
     videoOption ??= _map[AssetType.video];
@@ -122,9 +122,9 @@ class FilterOptionGroup {
     orders ??= this.orders;
 
     final FilterOptionGroup result = FilterOptionGroup()
-      ..setOption(AssetType.image, imageOption!)
-      ..setOption(AssetType.video, videoOption!)
-      ..setOption(AssetType.audio, audioOption!)
+      ..setOption(AssetType.image, imageOption)
+      ..setOption(AssetType.video, videoOption)
+      ..setOption(AssetType.audio, audioOption)
       ..containsPathModified = containsPathModified
       ..containsLivePhotos = containsLivePhotos
       ..onlyLivePhotos = onlyLivePhotos
